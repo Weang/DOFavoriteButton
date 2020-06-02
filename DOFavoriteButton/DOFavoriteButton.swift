@@ -17,7 +17,7 @@ open class DOFavoriteButton: UIButton {
     fileprivate var imageShape: CAShapeLayer!
     @IBInspectable open var image: UIImage! {
         didSet {
-            createLayers(image: image)
+            createLayers()
         }
     }
     @IBInspectable open var imageColorOn: UIColor! = UIColor(red: 255/255, green: 172/255, blue: 51/255, alpha: 1.0) {
@@ -81,29 +81,28 @@ open class DOFavoriteButton: UIButton {
             }
         }
     }
-
-    public convenience init() {
-        self.init(frame: CGRect.zero)
-    }
-
-    public override convenience init(frame: CGRect) {
-        self.init(frame: frame, image: UIImage())
-    }
-
-    public init(frame: CGRect, image: UIImage!) {
+    
+    var hasLayoutImage: Bool = false
+    
+    public override init(frame: CGRect) {
         super.init(frame: frame)
-        self.image = image
-        createLayers(image: image)
         addTargets()
     }
-
-    public required init(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)!
-        createLayers(image: UIImage())
-        addTargets()
+    
+    required public init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
-
-    fileprivate func createLayers(image: UIImage!) {
+    
+    open override func layoutSubviews() {
+        super.layoutSubviews()
+        if frame != .zero,
+            !hasLayoutImage {
+            createLayers()
+        }
+    }
+    
+    public func createLayers() {
+        hasLayoutImage = true
         self.layer.sublayers = nil
 
         let imageFrame = CGRect(x: frame.size.width / 2 - frame.size.width / 4, y: frame.size.height / 2 - frame.size.height / 4, width: frame.size.width / 2, height: frame.size.height / 2)
